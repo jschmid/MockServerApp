@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 
 // bootstrap
-import { Table } from 'react-bootstrap';
+import { Table, Button } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap/dist/css/bootstrap-theme.css';
 
@@ -31,12 +31,37 @@ class MainWindow extends Component {
         log: newLog
       }))
     });
+
+    ipcRenderer.on('server-address', (event, address) => {
+      this.setState(Object.assign({}, this.state, {
+        url: address
+      }))
+    })
+  }
+
+  componentWillMount() {
+    ipcRenderer.send('get-server-address');
+  }
+
+  openUrl() {
+    electron.shell.openExternal(this.state.url)
   }
 
   render() {
     return (
     <div className="main">
-      <header className="mw-header">{this.state.log.length} requests</header>
+      <header className="mw-header">
+      {this.state.log.length} requests on
+      <span className="mw-header-link" onClick={() => this.openUrl()}>
+        {this.state.url}
+      </span>
+      <Button bsStyle="default" className="mw-header-button" onClick={(e) => ipcRenderer.send('send-to-tray')}>
+      <span have role="img" aria-label="Show tray">⚔️</span>
+      </Button>
+      <Button bsStyle="info" className="mw-header-button" onClick={(e) => ipcRenderer.send('open-file')}>
+        Add file
+      </Button>
+      </header>
       <div className="mw-table-container">
       <Table className="mw-log-table" responsive striped hover bordered>
         <thead>

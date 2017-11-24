@@ -21,6 +21,46 @@ app.on('ready', () => {
   mainWindow = createMainWindow();
 });
 
+ipcMain.on('get-server-address', (event) => {
+  event.sender.send('server-address', 'http://localhost:'+serverPort)
+})
+
+ipcMain.on('open-file', (event) => {
+  const dialogOptions = {
+    title: 'Select JSON file',
+    properties: ['openFile'],
+    filters: [{ name: 'JSON', extensions: ['json'] }],
+  };
+
+  // when file chosen, add it to the server mock responses
+  dialog.showOpenDialog(mainWindow, dialogOptions, (filePaths) => {
+    if (!filePaths) return;
+    const filePath = filePaths[0];
+
+    fs.readFile(filePath, 'utf8', (err, json) => {
+      let endPoint = path.basename(filePath, '.json');
+      srv.addPath(endPoint, JSON.parse(json));
+    });
+  });
+})
+
+ipcMain.on('send-to-tray', (event) => {
+  const iconPath = path.join(__dirname, './tray-icon.png')
+  let tray = new Tray(iconPath);
+  const contextMenu = Menu.buildFromTemplate([
+    {label: 'Show Window...', click: ()=>{ 
+      app.dock.show();
+      mainWindow.show();
+            
+      setTimeout(()=>{ tray.destroy(); tray = null; }, 500);
+    }},
+    {label: 'Quit', role: 'quit'}
+  ])
+  tray.setContextMenu(contextMenu)
+  app.dock.hide();
+  mainWindow.hide();
+})
+
 //
 //  Window
 //
