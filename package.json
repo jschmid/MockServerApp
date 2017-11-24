@@ -19,12 +19,30 @@
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "preelectron-dev": "yarn install",
-    "electron-dev": "ELECTRON_START_URL=http://localhost:3000 concurrently \"BROWSER=none yarn start\" \"wait-on http://localhost:3000 && electron .\""
+    "electron-dev": "ELECTRON_START_URL=http://localhost:3000 concurrently \"BROWSER=none yarn start\" \"wait-on http://localhost:3000 && electron .\"",
+    "preelectron-pack": "yarn build",
+    "electron-pack": "build --em.main=build/electron.js"
   },
   "devDependencies": {
     "concurrently": "^3.5.0",
     "electron": "^1.7.9",
-    "wait-on": "^2.0.2"
+    "wait-on": "^2.0.2",
+    "electron-builder": "^19.45.4"
+  },
+  "build": {
+    "appId": "com.jonasisthebest.app",
+    "files": [
+      "build/**/*",
+      "node_modules/**/*"
+    ],
+    "directories": {
+      "buildResources": "assets"
+    },
+    "mac": {
+      "target": ["dir"]
+    },
+    "compression": "store",
+    "asar": true
   },
   "homepage": "./",
   "main": "public/electron.js"
