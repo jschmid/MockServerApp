@@ -37,6 +37,10 @@ class MainWindow extends Component {
         url: address
       }))
     })
+
+    ipcRenderer.on('show-alert', (event, endpoint) => {
+      alert(`Added API endpoint: /${endpoint} !`)
+    })
   }
 
   componentWillMount() {

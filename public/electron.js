@@ -40,6 +40,8 @@ ipcMain.on('open-file', (event) => {
     fs.readFile(filePath, 'utf8', (err, json) => {
       let endPoint = path.basename(filePath, '.json');
       srv.addPath(endPoint, JSON.parse(json));
+
+      event.sender.send('show-alert', endPoint);
     });
   });
 })

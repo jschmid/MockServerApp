@@ -31,6 +31,8 @@
   },
   "build": {
     "appId": "com.jonasisthebest.app",
+    "productName": "Jonas Mock Server",
+    "copyright": "Copyright © 2017 Jonas Schmid @ Swift Alps",
     "files": [
       "build/**/*",
       "node_modules/**/*"
